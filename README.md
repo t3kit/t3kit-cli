@@ -1,4 +1,4 @@
-# t3kit [![npm version](https://badge.fury.io/js/t3kit.svg)](https://badge.fury.io/js/t3kit)
+# t3kit-cli [![npm version](https://badge.fury.io/js/t3kit.svg)](https://badge.fury.io/js/t3kit)
 ```
 t3kit command line interface
 ```
@@ -36,7 +36,7 @@ t3kit
 ## Flags/options:
 
 ```
-[ -s | --subtheme ]          generate subtheme_t3kit
+[ -s | --subtheme ]          generate new subtheme_t3kit_name
 [ -h | --help ]              show t3kit CLI help
 [ -v | --version ]           show t3kit CLI version
 ```
