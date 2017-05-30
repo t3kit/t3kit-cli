@@ -6,7 +6,7 @@ const _ = require('lodash')
 const prompt = require('./lib/prompt')
 const chalk = require('chalk')
 const helpers = require('./lib/helpers')
-// const variables = require('./lib/variables')
+const variables = require('./lib/variables')
 const git = require('./lib/git')
 const help = require('./lib/help')
 const check = require('./lib/check')
@@ -27,35 +27,50 @@ check.isInstalled()
 // ====================================================
 function generateSubtheme () {
   return helpers.promiseChainStarter(cache)
+  .then(() => helpers.message(cache, text.subtheme.hint.welcome))
+  .then(() => prompt.isOk(cache, `Continue?`))
+  .then(check.folder)
+
   .then(prompt.subthemeQuestions)
   .then(prompt.siteName)
   .then(prompt.dirName)
   .then(cmd.mkdir)
-  .then(() => git.clone(cache, `https://github.com/t3kit/subtheme_t3kit_template.git`))
+  .then(() => git.clone(cache, variables.subtheme.repo))
+
   .then(() => cmd.setWorkDir(cache, cache.dirName))
   .then(git.getLastTag)
   .then(prompt.templateVersion)
+
   .then(git.checkout)
   .then(git.removeRepo)
   .then(git.init)
   .then(git.add)
-  .then(() => git.commit(cache, `initial commit, based on subtheme_t3kit_template v${cache.lastTag}`))
-  .then(() => cmd.readFilesRecursively(cache, `Configuration`, `Resources/Private`, 'Meta'))
+  .then(() => git.commit(cache, text.subtheme.initialCommit(cache)))
+
+  .then(() => cmd.readFilesRecursively(cache, `Configuration`, `Resources/Private`, `Meta`))
+
   .then(() => parse.replaceString(cache, `subtheme_t3kit_template`, `subtheme_t3kit_${cache.siteName}`))
   .then(() => parse.replaceString(cache, `Subtheme t3kit template`, `Subtheme ${cache.siteName}`))
+
+  .then(() => parse.replaceStringInFile(cache, `subtheme_t3kit_template`, `subtheme_t3kit_${cache.siteName}`, `Resources/Public/README.md`))
+  .then(() => parse.replaceStringInFile(cache, `subtheme_t3kit_template`, `subtheme_t3kit_${cache.siteName}`, `felayout/README.md`))
+  .then(() => parse.replaceStringInFile(cache, `Subtheme t3kit template`, `Subtheme ${cache.siteName}`, `felayout/README.md`))
 
   .then(() => cmd.rmFile(cache, `LICENSE.txt`))
   .then(() => cmd.rmFile(cache, `CHANGELOG.md`))
   .then(() => cmd.rmFile(cache, `README.md`))
   .then(() => cmd.renameFile(cache, `readmeTemplate.md`, `README.md`))
-  .then(() => cmd.appendFile(cache, `README.md`, `**Built on [subtheme_t3kit_template](https://github.com/t3kit/subtheme_t3kit_template) v${cache.lastTag}**`))
+  .then(() => cmd.appendFile(cache, `README.md`, variables.subtheme.readmeLabel(cache)))
 
   .then(git.add)
-  .then(() => git.commit(cache, `initialize new subtheme_t3kit_${cache.siteName}`))
+  .then(() => git.commit(cache, text.subtheme.finalCommit(cache)))
+
+  .then(() => helpers.message(cache, text.subtheme.done(cache)))
 
   // .then((val) => { console.log(val) })
   .catch(helpers.error)
 }
+
 // main start point
 // ====================================================
 function run () {
