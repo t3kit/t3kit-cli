@@ -20,7 +20,7 @@ Use the ` t3kit -h ` or ` t3kit --help ` command for more info about utility.
 ## Install this globally and you'll have access to the t3kit command anywhere on your system.
 
 ```
-[sudo] npm install -g t3kit
+[sudo] npm install -g @t3kit/t3kit-cli
 ```
 
 _Note: You might need to use `sudo` before `npm` command to install package_ **globally**
