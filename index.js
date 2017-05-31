@@ -31,7 +31,6 @@ function generateSubtheme () {
   .then(() => prompt.isOk(cache, `Continue?`))
   .then(check.folder)
 
-  .then(prompt.subthemeQuestions)
   .then(prompt.siteName)
   .then(() => prompt.isOk(cache, text.subtheme.isAutoDirName(cache), prompt.dirName))
   .then(cmd.mkdir)
@@ -102,8 +101,9 @@ if (_.size(argv) !== 1 || argv._.length) {
   // t3kit  -s, --subtheme
   } else if (argv.s || argv.subtheme) {
     cache.whatToDo = 'subtheme'
-    console.log(chalk.red(text.notReady))
-    process.exit(1)
+    generateSubtheme()
+    // console.log(chalk.red(text.notReady))
+    // process.exit(1)
   } else {
     help.allHelp()
   }
