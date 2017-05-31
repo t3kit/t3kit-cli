@@ -33,11 +33,11 @@ function generateSubtheme () {
 
   .then(prompt.subthemeQuestions)
   .then(prompt.siteName)
-  .then(prompt.dirName)
+  .then(() => prompt.isOk(cache, text.subtheme.isAutoDirName(cache), prompt.dirName))
   .then(cmd.mkdir)
   .then(() => git.clone(cache, variables.subtheme.repo))
 
-  .then(() => cmd.setWorkDir(cache, cache.dirName))
+  .then(() => cmd.setWorkDir(cache, cache.dirName || variables.subtheme.dirName(cache)))
   .then(git.getLastTag)
   .then(prompt.templateVersion)
 
@@ -49,12 +49,12 @@ function generateSubtheme () {
 
   .then(() => cmd.readFilesRecursively(cache, `Configuration`, `Resources/Private`, `Meta`))
 
-  .then(() => parse.replaceString(cache, `subtheme_t3kit_template`, `subtheme_t3kit_${cache.siteName}`))
-  .then(() => parse.replaceString(cache, `Subtheme t3kit template`, `Subtheme ${cache.siteName}`))
+  .then(() => parse.replaceString(cache, /subtheme_t3kit_template/g, `subtheme_t3kit_${cache.siteName}`))
+  .then(() => parse.replaceString(cache, /Subtheme t3kit template/g, `Subtheme ${cache.siteName}`))
 
-  .then(() => parse.replaceStringInFile(cache, `subtheme_t3kit_template`, `subtheme_t3kit_${cache.siteName}`, `Resources/Public/README.md`))
-  .then(() => parse.replaceStringInFile(cache, `subtheme_t3kit_template`, `subtheme_t3kit_${cache.siteName}`, `felayout/README.md`))
-  .then(() => parse.replaceStringInFile(cache, `Subtheme t3kit template`, `Subtheme ${cache.siteName}`, `felayout/README.md`))
+  .then(() => parse.replaceStringInFile(cache, /subtheme_t3kit_template/g, `subtheme_t3kit_${cache.siteName}`, `Resources/Public/README.md`))
+  .then(() => parse.replaceStringInFile(cache, /subtheme_t3kit_template/g, `subtheme_t3kit_${cache.siteName}`, `felayout/README.md`))
+  .then(() => parse.replaceStringInFile(cache, /Subtheme t3kit template/g, `Subtheme ${cache.siteName}`, `felayout/README.md`))
 
   .then(() => cmd.rmFile(cache, `LICENSE.txt`))
   .then(() => cmd.rmFile(cache, `CHANGELOG.md`))
