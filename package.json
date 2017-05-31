@@ -1,5 +1,5 @@
 {
-  "name": "t3kit",
+  "name": "@t3kit/t3kit-cli",
   "version": "0.0.1",
   "description": "The t3kit command line interface",
   "main": "index.js",
