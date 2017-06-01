@@ -14,7 +14,6 @@ const parse = require('./lib/parse')
 // const dep = require('./lib/dep')
 const argv = require('minimist')(process.argv.slice(2))
 const cmd = require('./lib/cmd')
-// const subtheme = require('./lib/subtheme')
 const text = require('./lib/text')
 
 var cache = {}
@@ -32,7 +31,8 @@ function generateSubtheme () {
   .then(check.folder)
 
   .then(prompt.siteName)
-  .then(() => prompt.isOk(cache, text.subtheme.isAutoDirName(cache), prompt.dirName))
+  .then(check.isFolderExist)
+  .then(() => cache.isFolderExist ? prompt.dirName(cache) : prompt.isOk(cache, text.subtheme.isAutoDirName(cache), prompt.dirName))
   .then(cmd.mkdir)
   .then(() => git.clone(cache, variables.subtheme.repo))
 
